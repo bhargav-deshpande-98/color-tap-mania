@@ -74,8 +74,8 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
       type,
       y,
       rotation: Math.random() * Math.PI * 2,
-      rotationSpeed: 0.02 * direction * (0.8 + Math.random() * 0.4),
-      radius: type === 'dotCircle' ? 60 : 70,
+      rotationSpeed: 0.015 * direction * (0.7 + Math.random() * 0.3),
+      radius: type === 'dotCircle' ? 100 : 110,
       passed: false,
     };
   };
@@ -105,7 +105,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
   const drawRing = (ctx: CanvasRenderingContext2D, obstacle: Obstacle, centerX: number, cameraY: number) => {
     const screenY = obstacle.y - cameraY;
     const { radius, rotation } = obstacle;
-    const thickness = 12;
+    const thickness = 20;
     
     ctx.save();
     ctx.translate(centerX, screenY);
@@ -131,8 +131,8 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
   const drawDotCircle = (ctx: CanvasRenderingContext2D, obstacle: Obstacle, centerX: number, cameraY: number) => {
     const screenY = obstacle.y - cameraY;
     const { radius, rotation } = obstacle;
-    const dotCount = 16;
-    const dotRadius = 8;
+    const dotCount = 20;
+    const dotRadius = 12;
     
     ctx.save();
     ctx.translate(centerX, screenY);
@@ -157,7 +157,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
   const drawHalfRing = (ctx: CanvasRenderingContext2D, obstacle: Obstacle, centerX: number, cameraY: number) => {
     const screenY = obstacle.y - cameraY;
     const { radius, rotation } = obstacle;
-    const thickness = 12;
+    const thickness = 20;
     
     ctx.save();
     ctx.translate(centerX, screenY);
@@ -244,8 +244,8 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
     const dy = ball.y - obstacle.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
     
-    const innerRadius = obstacle.radius - 15;
-    const outerRadius = obstacle.radius + 15;
+    const innerRadius = obstacle.radius - 18;
+    const outerRadius = obstacle.radius + 18;
     
     // Ball is in the obstacle zone
     if (distance > innerRadius && distance < outerRadius) {
