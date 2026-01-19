@@ -71,6 +71,6 @@ export interface GameState {
 // Constants
 export const GRAVITY = 0.35;
 export const JUMP_FORCE = -9;
-export const BALL_RADIUS = 15;
+export const BALL_RADIUS = 12;
 export const OBSTACLE_GAP = 300;
 export const ROTATION_SPEED = 0.015;
