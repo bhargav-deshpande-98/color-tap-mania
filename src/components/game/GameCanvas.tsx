@@ -115,12 +115,38 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
     };
   };
 
-  // Handle tap/click
+  // Handle tap/click - no debounce, every tap should bounce
   const handleTap = useCallback(() => {
     if (!gameStateRef.current || gameStatus !== 'playing') return;
-    
+
     gameStateRef.current.ball.velocity = JUMP_FORCE;
   }, [gameStatus]);
+
+  // Set up native touch/mouse event listeners for better iOS/Flutter compatibility
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const onInput = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleTap();
+    };
+
+    // Use touchstart for touch devices (iOS), mousedown for desktop
+    canvas.addEventListener('touchstart', onInput, { passive: false });
+    canvas.addEventListener('mousedown', onInput);
+
+    // Prevent scrolling
+    const preventScroll = (e: Event) => e.preventDefault();
+    canvas.addEventListener('touchmove', preventScroll, { passive: false });
+
+    return () => {
+      canvas.removeEventListener('touchstart', onInput);
+      canvas.removeEventListener('mousedown', onInput);
+      canvas.removeEventListener('touchmove', preventScroll);
+    };
+  }, [handleTap]);
 
   // Draw the ball with prominent color and flash effect on color change
   const drawBall = (ctx: CanvasRenderingContext2D, ball: GameState['ball'], cameraY: number) => {
@@ -634,10 +660,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
     <canvas
       ref={canvasRef}
       className="game-canvas touch-none"
-      onPointerDown={(e) => {
-        e.preventDefault();
-        handleTap();
-      }}
+      style={{ touchAction: 'none' }}
     />
   );
 };
