@@ -1,8 +1,8 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
-import { 
-  GameState, 
-  GAME_COLORS, 
-  COLOR_ORDER, 
+import {
+  GameState,
+  GAME_COLORS,
+  COLOR_ORDER,
   GameColor,
   getRandomColor,
   GRAVITY,
@@ -13,6 +13,7 @@ import {
   Star,
   ColorSwitcher
 } from '@/lib/gameTypes';
+import { initAudio, playTapSound, playScoreSound, playColorChangeSound, playDeathSound } from '@/lib/sounds';
 
 interface GameCanvasProps {
   onGameOver: (score: number) => void;
@@ -120,6 +121,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
     if (!gameStateRef.current || gameStatus !== 'playing') return;
 
     gameStateRef.current.ball.velocity = JUMP_FORCE;
+    playTapSound();
   }, [gameStatus]);
 
   // Set up native touch/mouse event listeners for better iOS/Flutter compatibility
@@ -438,6 +440,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
         game.ball.color = newColor;
         colorChangeFlashRef.current = 1.0;
         pendingColorChangeRef.current = null;
+        playColorChangeSound();
       }
 
       // Apply gravity
@@ -459,6 +462,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
           obstacle.passed = true;
           game.score += 1;
           onScoreChange(game.score);
+          playScoreSound();
 
           // Schedule ball color change every 2 obstacles (with 1 second delay)
           if (game.score % 2 === 0 && !pendingColorChangeRef.current) {
@@ -479,6 +483,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
         if (!obstacle.passed && checkCollision(game.ball, obstacle, centerX)) {
           console.log('Game over at score:', game.score, 'obstacle y:', obstacle.y, 'ball y:', game.ball.y);
           game.status = 'gameover';
+          playDeathSound();
           onGameOver(game.score);
           return;
         }
@@ -526,6 +531,7 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ onGameOver, onScoreChange, game
       // Check bottom boundary (game over)
       if (game.ball.y > game.cameraY + canvas.height + 50) {
         game.status = 'gameover';
+        playDeathSound();
         onGameOver(game.score);
         return;
       }

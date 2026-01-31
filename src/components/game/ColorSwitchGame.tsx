@@ -3,6 +3,7 @@ import GameCanvas from './GameCanvas';
 import GameUI from './GameUI';
 import StartScreen from './StartScreen';
 import GameOverScreen from './GameOverScreen';
+import { initAudio } from '@/lib/sounds';
 
 type GameScreen = 'start' | 'playing' | 'gameover';
 
@@ -24,6 +25,7 @@ const ColorSwitchGame: React.FC = () => {
 
   // Start game
   const handleStart = useCallback(() => {
+    initAudio();
     setScore(0);
     setIsNewHighScore(false);
     setIsPaused(false);
